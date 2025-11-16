@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Cavendish Bus Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/cavendish_mainlogo.jpg" alt="Cavendish Logo" class="sidebar-logo">
+                <div class="sidebar-title">Bus Tracker</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="map">
+                    <span class="nav-icon">🗺️</span>
+                    <span>Live Bus Map</span>
+                </a>
+                <a href="#" class="nav-item" data-page="schedule">
+                    <span class="nav-icon">📅</span>
+                    <span>Bus Schedule</span>
+                </a>
+                <a href="#" class="nav-item" data-page="routes">
+                    <span class="nav-icon">🚌</span>
+                    <span>Available Routes</span>
+                </a>
+                <a href="#" class="nav-item" data-page="complaints">
+                    <span class="nav-icon">📝</span>
+                    <span>Submit Complaint</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <span class="nav-icon">📊</span>
+                    <span>Travel History</span>
+                </a>
+                <a href="../index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h2>Student Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="header-icon" id="notificationIcon">
+                        <span>🔔</span>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="header-icon" id="settingsIcon">
+                        <span>⚙️</span>
+                    </div>
+                    <div class="profile-icon" id="profileIcon">
+                        <span>ST</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Container -->
+            <div class="content-container">
+                <!-- Campus Selection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Select Campus</h3>
+                        <p class="card-subtitle">Choose your campus to view available buses</p>
+                    </div>
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="campusSelect">Campus</label>
+                            <select id="campusSelect">
+                                <option value="">Select Campus</option>
+                                <option value="glass">Glass Campus</option>
+                                <option value="medical">Medical Campus</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="routeFilter">Route</label>
+                            <select id="routeFilter">
+                                <option value="all">All Routes</option>
+                                <option value="route1">Route 1 - City Center</option>
+                                <option value="route2">Route 2 - Residential Areas</option>
+                                <option value="route3">Route 3 - Express</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Bus Map -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Live Bus Tracking</h3>
+                        <p class="card-subtitle">Real-time locations of all Cavendish buses</p>
+                    </div>
+                    <div class="map-container">
+                        <div id="busMap"></div>
+                        <div class="map-controls">
+                            <button class="map-btn" id="refreshMapBtn">🔄 Refresh</button>
+                            <button class="map-btn" id="centerMapBtn">📍 Center</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Buses -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Buses</h3>
+                        <p class="card-subtitle">Currently running buses and their status</p>
+                    </div>
+                    <div class="bus-list" id="activeBusList">
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Bus #001 - Glass Campus Route</h4>
+                                <p>Driver: John Mwamba | ETA: 5 minutes</p>
+                            </div>
+                            <span class="bus-status active">On Route</span>
+                        </div>
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Bus #002 - Medical Campus Route</h4>
+                                <p>Driver: Mary Phiri | ETA: 12 minutes</p>
+                            </div>
+                            <span class="bus-status active">On Route</span>
+                        </div>
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Bus #003 - Express Route</h4>
+                                <p>Driver: David Banda | ETA: 8 minutes</p>
+                            </div>
+                            <span class="bus-status active">On Route</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Complaint Form (Hidden by default) -->
+                <div class="card hidden" id="complaintForm">
+                    <div class="card-header">
+                        <h3 class="card-title">Submit a Complaint</h3>
+                        <p class="card-subtitle">Let us know about any issues</p>
+                    </div>
+                    <form class="route-form" id="studentComplaintForm">
+                        <div class="form-group">
+                            <label for="complaintType">Complaint Type</label>
+                            <select id="complaintType" required>
+                                <option value="">Select Type</option>
+                                <option value="delay">Bus Delay</option>
+                                <option value="behavior">Driver Behavior</option>
+                                <option value="cleanliness">Bus Cleanliness</option>
+                                <option value="safety">Safety Concern</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="busNumber">Bus Number (if applicable)</label>
+                            <input type="text" id="busNumber" placeholder="e.g., Bus #001">
+                        </div>
+                        <div class="form-group">
+                            <label for="complaintDescription">Description</label>
+                            <textarea id="complaintDescription" rows="5" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 6px; font-family: 'Roboto', sans-serif;" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Complaint</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../scripts/main.js"></script>
+    <script>
+        // Initialize student page
+        if (typeof initStudentPage === 'function') {
+            initStudentPage();
+        }
+    </script>
+</body>
+</html>

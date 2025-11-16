@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - Cavendish Bus Management</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/cavendish_mainlogo.jpg" alt="Cavendish Logo" class="sidebar-logo">
+                <div class="sidebar-title">Driver Panel</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="route">
+                    <span class="nav-icon">🗺️</span>
+                    <span>My Route</span>
+                </a>
+                <a href="#" class="nav-item" data-page="start-trip">
+                    <span class="nav-icon">🚀</span>
+                    <span>Start Trip</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <span class="nav-icon">📊</span>
+                    <span>Trip History</span>
+                </a>
+                <a href="#" class="nav-item" data-page="schedule">
+                    <span class="nav-icon">📅</span>
+                    <span>My Schedule</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <span class="nav-icon">📝</span>
+                    <span>Report Issue</span>
+                </a>
+                <a href="../index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h2>Driver Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="header-icon" id="notificationIcon">
+                        <span>🔔</span>
+                        <span class="notification-badge">2</span>
+                    </div>
+                    <div class="header-icon" id="settingsIcon">
+                        <span>⚙️</span>
+                    </div>
+                    <div class="profile-icon" id="profileIcon">
+                        <span>DR</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Container -->
+            <div class="content-container">
+                <!-- Driver Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <span>🚌</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Bus #001</h3>
+                            <p>Assigned Bus</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <span>✅</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>24</h3>
+                            <p>Trips This Week</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <span>⏱️</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3.5h</h3>
+                            <p>Today's Drive Time</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <span>🎯</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Glass</h3>
+                            <p>Current Campus</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Current Status</h3>
+                        <p class="card-subtitle">Your current trip information</p>
+                    </div>
+                    <div id="driverStatus" class="driver-status">
+                        <div class="status-info">
+                            <h4>Status: <span id="tripStatus" class="bus-status idle">Not On Route</span></h4>
+                            <p id="statusDescription">You are currently not on a route. Start a trip to begin tracking.</p>
+                        </div>
+                        <button id="toggleTripBtn" class="btn-primary" style="max-width: 200px; margin-top: 20px;">Start Trip</button>
+                    </div>
+                </div>
+
+                <!-- Start Trip Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Trip Management</h3>
+                        <p class="card-subtitle">Start or end your route</p>
+                    </div>
+                    <form class="route-form" id="tripForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="routeSelect">Select Route</label>
+                                <select id="routeSelect" required>
+                                    <option value="">Choose a route</option>
+                                    <option value="glass-campus">Glass Campus Route</option>
+                                    <option value="medical-campus">Medical Campus Route</option>
+                                    <option value="express">Express Route</option>
+                                    <option value="residential">Residential Areas</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="busNumber">Bus Number</label>
+                                <input type="text" id="busNumber" value="Bus #001" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="departureTime">Departure Time</label>
+                                <input type="time" id="departureTime" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="estimatedPassengers">Estimated Passengers</label>
+                                <input type="number" id="estimatedPassengers" min="0" max="50" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="routeNotes">Route Notes (Optional)</label>
+                            <textarea id="routeNotes" rows="3" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 6px; font-family: 'Roboto', sans-serif;" placeholder="Any special notes about this trip..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Confirm & Start</button>
+                    </form>
+                </div>
+
+                <!-- Route Map -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Route Map</h3>
+                        <p class="card-subtitle">Your assigned route and current location</p>
+                    </div>
+                    <div class="map-container">
+                        <div id="driverMap"></div>
+                        <div class="map-controls">
+                            <button class="map-btn" id="updateLocationBtn">📍 Update Location</button>
+                            <button class="map-btn" id="centerDriverMapBtn">🎯 Center</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Schedule -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Schedule</h3>
+                        <p class="card-subtitle">Your assigned trips for today</p>
+                    </div>
+                    <div class="bus-list">
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Morning Shift - Glass Campus</h4>
+                                <p>07:00 AM - 10:00 AM | Route: City Center → Glass Campus</p>
+                            </div>
+                            <span class="bus-status active">Completed</span>
+                        </div>
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Midday Shift - Medical Campus</h4>
+                                <p>12:00 PM - 02:00 PM | Route: Medical Campus → Residential Areas</p>
+                            </div>
+                            <span class="bus-status active">In Progress</span>
+                        </div>
+                        <div class="bus-item">
+                            <div class="bus-info">
+                                <h4>Evening Shift - Glass Campus</h4>
+                                <p>04:00 PM - 07:00 PM | Route: Glass Campus → City Center</p>
+                            </div>
+                            <span class="bus-status idle">Upcoming</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Issue Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Report an Issue</h3>
+                        <p class="card-subtitle">Report vehicle or route issues</p>
+                    </div>
+                    <form class="route-form" id="issueReportForm">
+                        <div class="form-group">
+                            <label for="issueType">Issue Type</label>
+                            <select id="issueType" required>
+                                <option value="">Select Issue Type</option>
+                                <option value="mechanical">Mechanical Problem</option>
+                                <option value="accident">Accident/Incident</option>
+                                <option value="road">Road Condition</option>
+                                <option value="passenger">Passenger Issue</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="issueDescription">Description</label>
+                            <textarea id="issueDescription" rows="4" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 6px; font-family: 'Roboto', sans-serif;" required placeholder="Describe the issue in detail..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="urgentIssue">
+                                Mark as urgent (requires immediate attention)
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-primary">Submit Report</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../scripts/main.js"></script>
+    <script>
+        // Initialize driver page
+        if (typeof initDriverPage === 'function') {
+            initDriverPage();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cavendish Bus Management - Student Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo-section">
+                <img src="assets/images/cavendish_mainlogo.jpg" alt="Cavendish University Logo" class="university-logo">
+                <h1>Bus Management System</h1>
+                <p class="subtitle">Student Portal</p>
+            </div>
+            
+            <form id="studentLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId" name="studentId" placeholder="Enter your Student ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">Login</button>
+                
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                </div>
+            </form>
+            
+            <div class="other-portals">
+                <p>Staff Login:</p>
+                <div class="portal-links">
+                    <a href="admin_dashboard/home.html" class="portal-link">Admin Portal</a>
+                    <a href="driver_page/home.html" class="portal-link">Driver Portal</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="login-footer">
+            <p>&copy; 2025 Cavendish University Zambia. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <script src="scripts/main.js"></script>
+</body>
+</html>
