@@ -4,6 +4,8 @@
 let studentMap, adminMap, driverMap;
 let busMarkers = [];
 let isOnTrip = false;
+let touchStartX = 0;
+let touchEndX = 0;
 
 // ===================================
 // Cavendish University Zambia Coordinates
@@ -51,13 +53,25 @@ const SAMPLE_BUSES = [
 ];
 
 // ===================================
-// Student Login Page Functions
+// Login Page Functions
 // ===================================
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('studentLoginForm');
-    
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleStudentLogin);
+    // Student Login
+    const studentLoginForm = document.getElementById('studentLoginForm');
+    if (studentLoginForm) {
+        studentLoginForm.addEventListener('submit', handleStudentLogin);
+    }
+
+    // Admin Login
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', handleAdminLogin);
+    }
+
+    // Driver Login
+    const driverLoginForm = document.getElementById('driverLoginForm');
+    if (driverLoginForm) {
+        driverLoginForm.addEventListener('submit', handleDriverLogin);
     }
 
     // Forgot password handler
@@ -76,16 +90,115 @@ function handleStudentLogin(e) {
     const studentId = document.getElementById('studentId').value;
     const password = document.getElementById('password').value;
     
-    // Basic validation (in production, this would authenticate with a backend)
-    if (studentId && password) {
+    // Validate inputs
+    if (!studentId || !password) {
+        alert('Please enter both Student ID and Password');
+        return;
+    }
+    
+    // Get approved students from localStorage
+    const approvedStudents = localStorage.getItem('cavendish_students');
+    const students = approvedStudents ? JSON.parse(approvedStudents) : [];
+    
+    // Find student with matching ID and password
+    const student = students.find(s => s.studentId === studentId && s.password === password);
+    
+    if (student) {
         // Store student info in session storage
-        sessionStorage.setItem('studentId', studentId);
+        sessionStorage.setItem('studentId', student.studentId);
+        sessionStorage.setItem('studentName', `${student.firstName} ${student.lastName}`);
+        sessionStorage.setItem('studentEmail', student.email);
         sessionStorage.setItem('userType', 'student');
         
         // Redirect to student dashboard
         window.location.href = 'student_page/home.html';
     } else {
-        alert('Please enter both Student ID and Password');
+        // Check if student is pending approval
+        const pendingStudents = localStorage.getItem('cavendish_pending_registrations');
+        const pending = pendingStudents ? JSON.parse(pendingStudents) : [];
+        const isPending = pending.some(s => s.studentId === studentId);
+        
+        if (isPending) {
+            alert('Your registration is pending admin approval. Please wait for approval before logging in.');
+        } else {
+            alert('Invalid Student ID or Password. Please check your credentials and try again.');
+        }
+    }
+}
+
+// ===================================
+// Admin Login Handler
+// ===================================
+function handleAdminLogin(e) {
+    e.preventDefault();
+    
+    const adminId = document.getElementById('adminId').value;
+    const password = document.getElementById('password').value;
+    
+    // Validate inputs
+    if (!adminId || !password) {
+        alert('Please enter both Admin ID and Password');
+        return;
+    }
+    
+    // Default admin credentials (in production, this should be in a secure backend)
+    const defaultAdmins = [
+        { id: 'admin001', password: 'admin123', name: 'System Administrator' },
+        { id: 'admin', password: 'admin', name: 'Default Admin' }
+    ];
+    
+    // Check credentials
+    const admin = defaultAdmins.find(a => a.id === adminId && a.password === password);
+    
+    if (admin) {
+        // Store admin info in session storage
+        sessionStorage.setItem('adminId', admin.id);
+        sessionStorage.setItem('adminName', admin.name);
+        sessionStorage.setItem('userType', 'admin');
+        
+        // Redirect to admin dashboard
+        window.location.href = 'home.html';
+    } else {
+        alert('Invalid Admin ID or Password. Please check your credentials and try again.');
+    }
+}
+
+// ===================================
+// Driver Login Handler
+// ===================================
+function handleDriverLogin(e) {
+    e.preventDefault();
+    
+    const driverId = document.getElementById('driverId').value;
+    const password = document.getElementById('password').value;
+    
+    // Validate inputs
+    if (!driverId || !password) {
+        alert('Please enter both Driver ID and Password');
+        return;
+    }
+    
+    // Default driver credentials (in production, this should be in a secure backend)
+    const defaultDrivers = [
+        { id: 'driver001', password: 'driver123', name: 'John Mwamba' },
+        { id: 'driver002', password: 'driver123', name: 'Mary Phiri' },
+        { id: 'driver003', password: 'driver123', name: 'David Banda' },
+        { id: 'driver', password: 'driver', name: 'Test Driver' }
+    ];
+    
+    // Check credentials
+    const driver = defaultDrivers.find(d => d.id === driverId && d.password === password);
+    
+    if (driver) {
+        // Store driver info in session storage
+        sessionStorage.setItem('driverId', driver.id);
+        sessionStorage.setItem('driverName', driver.name);
+        sessionStorage.setItem('userType', 'driver');
+        
+        // Redirect to driver dashboard
+        window.location.href = 'home.html';
+    } else {
+        alert('Invalid Driver ID or Password. Please check your credentials and try again.');
     }
 }
 
@@ -130,6 +243,9 @@ function initStudentMap() {
         
         // Add bus markers
         updateBusMarkers(studentMap, SAMPLE_BUSES);
+        
+        // Handle responsive map resizing
+        handleMapResize(studentMap);
         
         // Setup map controls
         document.getElementById('refreshMapBtn')?.addEventListener('click', () => {
@@ -179,6 +295,9 @@ function initAdminMap() {
         
         addCampusMarkers(adminMap);
         updateBusMarkers(adminMap, SAMPLE_BUSES);
+        
+        // Handle responsive map resizing
+        handleMapResize(adminMap);
         
         document.getElementById('refreshAdminMapBtn')?.addEventListener('click', () => {
             updateBusMarkers(adminMap, SAMPLE_BUSES);
@@ -238,6 +357,9 @@ function initDriverMap() {
         }).addTo(driverMap);
         
         driverLocation.bindPopup('<b>Your Location</b><br>Bus #001');
+        
+        // Handle responsive map resizing
+        handleMapResize(driverMap);
         
         document.getElementById('updateLocationBtn')?.addEventListener('click', () => {
             showNotification('Location updated successfully!');
@@ -596,6 +718,8 @@ function showNotification(message) {
         z-index: 10000;
         animation: slideIn 0.3s ease-out;
         max-width: 300px;
+        font-size: 14px;
+        line-height: 1.4;
     `;
     notification.textContent = message;
     
@@ -606,6 +730,198 @@ function showNotification(message) {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
+
+// ===================================
+// Mobile Menu Management
+// ===================================
+function initMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    
+    if (!mobileMenuToggle || !sidebar || !mobileOverlay) return;
+    
+    // Toggle menu
+    mobileMenuToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleMobileMenu(true);
+    });
+    
+    // Close menu when clicking overlay
+    mobileOverlay.addEventListener('click', function() {
+        toggleMobileMenu(false);
+    });
+    
+    // Close menu when clicking nav items (except logout)
+    const navItems = sidebar.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            if (!this.href || this.href.includes('#')) {
+                setTimeout(() => toggleMobileMenu(false), 300);
+            }
+        });
+    });
+    
+    // Swipe to close menu
+    sidebar.addEventListener('touchstart', handleTouchStart, false);
+    sidebar.addEventListener('touchend', handleTouchEnd, false);
+}
+
+function toggleMobileMenu(open) {
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+    const body = document.body;
+    
+    if (open) {
+        sidebar.classList.add('active');
+        mobileOverlay.classList.add('active');
+        body.classList.add('no-scroll');
+    } else {
+        sidebar.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        body.classList.remove('no-scroll');
+    }
+}
+
+function handleTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}
+
+function handleSwipe() {
+    // Swipe left to close menu
+    if (touchStartX - touchEndX > 50) {
+        toggleMobileMenu(false);
+    }
+}
+
+// ===================================
+// Mobile Bottom Navigation
+// ===================================
+function initMobileBottomNav() {
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            const page = this.getAttribute('data-page');
+            if (page) {
+                e.preventDefault();
+                
+                // Update active state
+                mobileNavItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Also update sidebar nav
+                const sidebarNavItems = document.querySelectorAll('.sidebar .nav-item');
+                sidebarNavItems.forEach(nav => {
+                    if (nav.getAttribute('data-page') === page) {
+                        nav.click();
+                    }
+                });
+            }
+        });
+    });
+}
+
+// ===================================
+// Responsive Map Handling
+// ===================================
+function handleMapResize(map) {
+    if (!map) return;
+    
+    // Add resize event listener
+    window.addEventListener('resize', debounce(function() {
+        map.invalidateSize();
+    }, 250));
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', function() {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+    });
+}
+
+// Debounce utility function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// ===================================
+// Form Validation
+// ===================================
+function validateForm(formElement) {
+    const inputs = formElement.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+    
+    inputs.forEach(input => {
+        // Remove existing error messages
+        const existingError = input.parentElement.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+        input.classList.remove('error');
+        
+        // Check if empty
+        if (!input.value.trim()) {
+            isValid = false;
+            input.classList.add('error');
+            
+            const errorMsg = document.createElement('span');
+            errorMsg.className = 'error-message';
+            errorMsg.textContent = 'This field is required';
+            input.parentElement.appendChild(errorMsg);
+        }
+    });
+    
+    return isValid;
+}
+
+// ===================================
+// Initialize on Page Load
+// ===================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize mobile menu
+    initMobileMenu();
+    
+    // Initialize mobile bottom navigation
+    initMobileBottomNav();
+    
+    // Add smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Lazy load images if any
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+});
 
 // Add animation styles
 const style = document.createElement('style');

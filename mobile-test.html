@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobile Test - Cavendish Bus Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3361 0%, #14213f 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            opacity: 0.8;
+            font-size: 1rem;
+        }
+        
+        .test-section {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .test-btn {
+            background: white;
+            color: #1e3361;
+            padding: 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+        
+        .test-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .icon {
+            font-size: 24px;
+        }
+        
+        .info-card {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .info-card strong {
+            color: #ffd700;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .checklist li {
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checklist li::before {
+            content: '✓';
+            background: #4caf50;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .test-section {
+                padding: 20px;
+            }
+            
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚌 Mobile Responsiveness Test</h1>
+            <p class="subtitle">Cavendish Bus Management System</p>
+        </header>
+        
+        <div class="test-section">
+            <h2>📱 Quick Access to All Pages</h2>
+            <p>Test the mobile responsiveness of each portal:</p>
+            <div class="button-grid">
+                <a href="index.html" class="test-btn">
+                    <span class="icon">🏠</span>
+                    Student Login
+                </a>
+                <a href="student_page/home.html" class="test-btn">
+                    <span class="icon">🎓</span>
+                    Student Dashboard
+                </a>
+                <a href="driver_page/home.html" class="test-btn">
+                    <span class="icon">👨‍✈️</span>
+                    Driver Portal
+                </a>
+                <a href="admin_dashboard/home.html" class="test-btn">
+                    <span class="icon">⚙️</span>
+                    Admin Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>✅ Mobile Features to Test</h2>
+            <ul class="checklist">
+                <li>Tap the hamburger menu (☰) in top-left corner</li>
+                <li>Swipe left to close the sidebar menu</li>
+                <li>Use the bottom navigation bar to switch pages</li>
+                <li>Test forms - check input sizes and keyboard</li>
+                <li>Zoom and pan on the maps</li>
+                <li>Scroll through tables (should show as cards)</li>
+                <li>Rotate device to test landscape mode</li>
+                <li>Check button touch targets (should be easy to tap)</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h2>📐 Recommended Test Devices</h2>
+            <div class="info-card">
+                <strong>📱 Smartphones:</strong>
+                <p>iPhone SE (375px), iPhone 12 (390px), Samsung Galaxy (360px)</p>
+            </div>
+            <div class="info-card">
+                <strong>📱 Tablets:</strong>
+                <p>iPad Mini (768px), iPad Air (820px), iPad Pro (1024px)</p>
+            </div>
+            <div class="info-card">
+                <strong>💻 Desktop:</strong>
+                <p>1920x1080, 1440x900, 1366x768</p>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 What's New & Improved</h2>
+            <ul class="checklist">
+                <li>Fully responsive navigation with mobile menu</li>
+                <li>Touch-friendly buttons (44px minimum)</li>
+                <li>Responsive tables that transform into cards</li>
+                <li>Optimized maps for mobile devices</li>
+                <li>Bottom navigation bar for quick access</li>
+                <li>Smooth animations and transitions</li>
+                <li>Swipe gestures for better UX</li>
+                <li>Landscape mode optimization</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Browser DevTools Testing</h2>
+            <div class="info-card">
+                <strong>Step 1:</strong> Press F12 to open Developer Tools<br>
+                <strong>Step 2:</strong> Press Ctrl+Shift+M to toggle device toolbar<br>
+                <strong>Step 3:</strong> Select different devices from dropdown<br>
+                <strong>Step 4:</strong> Test both portrait and landscape orientations<br>
+                <strong>Step 5:</strong> Check responsive layout at various widths
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 Cavendish University Zambia</p>
+            <p>Mobile-Responsive Bus Management System</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Add touch feedback
+        document.querySelectorAll('.test-btn').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            btn.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+        });
+        
+        // Display current viewport size
+        function showViewportSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            console.log(`Viewport: ${width}x${height}px`);
+        }
+        
+        window.addEventListener('resize', showViewportSize);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(showViewportSize, 100);
+        });
+        
+        showViewportSize();
+    </script>
+</body>
+</html>

@@ -2,48 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Driver Dashboard - Cavendish Bus Management</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
     <div class="dashboard">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="../assets/images/cavendish_mainlogo.jpg" alt="Cavendish Logo" class="sidebar-logo">
+                <img src="../assets/images/white_logo.png" alt="Cavendish Logo" class="sidebar-logo">
                 <div class="sidebar-title">Driver Panel</div>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon">🏠</span>
+                    <span class="nav-icon"><i class="fas fa-home"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="#" class="nav-item" data-page="route">
-                    <span class="nav-icon">🗺️</span>
+                    <span class="nav-icon"><i class="fas fa-route"></i></span>
                     <span>My Route</span>
                 </a>
                 <a href="#" class="nav-item" data-page="start-trip">
-                    <span class="nav-icon">🚀</span>
+                    <span class="nav-icon"><i class="fas fa-play-circle"></i></span>
                     <span>Start Trip</span>
                 </a>
                 <a href="#" class="nav-item" data-page="history">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon"><i class="fas fa-history"></i></span>
                     <span>Trip History</span>
                 </a>
                 <a href="#" class="nav-item" data-page="schedule">
-                    <span class="nav-icon">📅</span>
+                    <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
                     <span>My Schedule</span>
                 </a>
                 <a href="#" class="nav-item" data-page="reports">
-                    <span class="nav-icon">📝</span>
+                    <span class="nav-icon"><i class="fas fa-file-alt"></i></span>
                     <span>Report Issue</span>
                 </a>
                 <a href="../index.html" class="nav-item">
-                    <span class="nav-icon">🚪</span>
+                    <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
                     <span>Logout</span>
                 </a>
             </nav>
@@ -58,11 +69,11 @@
                 </div>
                 <div class="header-right">
                     <div class="header-icon" id="notificationIcon">
-                        <span>🔔</span>
+                        <i class="fas fa-bell"></i>
                         <span class="notification-badge">2</span>
                     </div>
                     <div class="header-icon" id="settingsIcon">
-                        <span>⚙️</span>
+                        <i class="fas fa-cog"></i>
                     </div>
                     <div class="profile-icon" id="profileIcon">
                         <span>DR</span>
@@ -76,7 +87,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon blue">
-                            <span>🚌</span>
+                            <i class="fas fa-bus"></i>
                         </div>
                         <div class="stat-info">
                             <h3>Bus #001</h3>
@@ -85,7 +96,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon green">
-                            <span>✅</span>
+                            <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="stat-info">
                             <h3>24</h3>
@@ -94,7 +105,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon orange">
-                            <span>⏱️</span>
+                            <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-info">
                             <h3>3.5h</h3>
@@ -103,7 +114,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon red">
-                            <span>🎯</span>
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div class="stat-info">
                             <h3>Glass</h3>
@@ -247,6 +258,32 @@
                 </div>
             </div>
         </main>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav">
+            <div class="mobile-nav-items">
+                <a href="#" class="mobile-nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="route">
+                    <i class="fas fa-route"></i>
+                    <span>Route</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="start-trip">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Start Trip</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="schedule">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Schedule</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="reports">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Report</span>
+                </a>
+            </div>
+        </nav>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -256,6 +293,30 @@
         if (typeof initDriverPage === 'function') {
             initDriverPage();
         }
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+        });
+
+        mobileOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Mobile bottom nav active state
+        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+        mobileNavItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                mobileNavItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     </script>
 </body>
 </html>

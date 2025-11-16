@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e3361">
+    <meta name="description" content="Cavendish University Zambia Bus Management System - Student Management">
+    <title>Cavendish Bus Management - Manage Students</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3361 0%, #2a4a7f 100%);
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .management-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .management-card h2 {
+            color: #1e3361;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .management-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #1e3361;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #1e3361;
+            padding-bottom: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e3361;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e3361;
+            box-shadow: 0 0 0 3px rgba(30, 51, 97, 0.1);
+        }
+
+        .student-id-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .student-id-input input {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .student-id-input span {
+            font-size: 1.5rem;
+            color: #1e3361;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3361 0%, #2a4a7f 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(30, 51, 97, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #1e3361;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .students-list {
+            margin-top: 40px;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .students-table thead {
+            background: #1e3361;
+            color: white;
+        }
+
+        .students-table th,
+        .students-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .students-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #45a049;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #da190b;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .id-format-hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .students-table {
+                font-size: 0.85rem;
+            }
+
+            .students-table th,
+            .students-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-users-cog"></i> Student Management</h1>
+            <a href="home.html" class="logout-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <div class="management-card">
+            <h2><i class="fas fa-user-plus"></i> Add New Student</h2>
+            <p class="subtitle">Register a new student in the bus management system</p>
+
+            <div id="successMessage" class="success-message">
+                <i class="fas fa-check-circle"></i> <span id="successText"></span>
+            </div>
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
+
+            <form id="addStudentForm">
+                <div class="form-section">
+                    <h3><i class="fas fa-id-card"></i> Student Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="studentIdPart1">Student ID Number</label>
+                        <div class="student-id-input">
+                            <input type="text" id="studentIdPart1" name="studentIdPart1" 
+                                   placeholder="125" maxlength="3" pattern="[0-9]{3}" required>
+                            <span>-</span>
+                            <input type="text" id="studentIdPart2" name="studentIdPart2" 
+                                   placeholder="017" maxlength="3" pattern="[0-9]{3}" required>
+                        </div>
+                        <div class="id-format-hint">
+                            <i class="fas fa-info-circle"></i> Format: xxx-xxx (e.g., 125-017)
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName"><i class="fas fa-user"></i> First Name</label>
+                            <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName"><i class="fas fa-user"></i> Last Name</label>
+                            <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="student@cavendish.ac.zm" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-lock"></i> Account Security</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password"><i class="fas fa-key"></i> Password</label>
+                            <input type="password" id="password" name="password" 
+                                   placeholder="Enter password" minlength="6" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword"><i class="fas fa-key"></i> Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" 
+                                   placeholder="Confirm password" minlength="6" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Add Student
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <div class="students-list">
+                <h3><i class="fas fa-list"></i> Registered Students</h3>
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <!-- Students will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage key for students
+        const STORAGE_KEY = 'cavendish_students';
+
+        // Load students from localStorage
+        function loadStudents() {
+            const students = localStorage.getItem(STORAGE_KEY);
+            return students ? JSON.parse(students) : [];
+        }
+
+        // Save students to localStorage
+        function saveStudents(students) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+        }
+
+        // Display students in table
+        function displayStudents() {
+            const students = loadStudents();
+            const tbody = document.getElementById('studentsTableBody');
+            
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No students registered yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = students.map(student => `
+                <tr>
+                    <td><strong>${student.studentId}</strong></td>
+                    <td>${student.firstName} ${student.lastName}</td>
+                    <td>${student.email}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="editStudent('${student.studentId}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteStudent('${student.studentId}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successMsg.style.display = 'block';
+            
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorMsg.style.display = 'block';
+            
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        // Auto-format student ID input
+        document.getElementById('studentIdPart1').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 3) {
+                document.getElementById('studentIdPart2').focus();
+            }
+        });
+
+        document.getElementById('studentIdPart2').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        // Handle form submission
+        document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const part1 = document.getElementById('studentIdPart1').value;
+            const part2 = document.getElementById('studentIdPart2').value;
+            const studentId = `${part1}-${part2}`;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate student ID format
+            if (part1.length !== 3 || part2.length !== 3) {
+                showError('Student ID must be in format xxx-xxx (6 digits)');
+                return;
+            }
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showError('Passwords do not match!');
+                return;
+            }
+
+            // Load existing students
+            const students = loadStudents();
+
+            // Check if student ID already exists
+            if (students.some(s => s.studentId === studentId)) {
+                showError('Student ID already exists!');
+                return;
+            }
+
+            // Add new student
+            const newStudent = {
+                studentId: studentId,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password, // In production, this should be hashed
+                createdAt: new Date().toISOString()
+            };
+
+            students.push(newStudent);
+            saveStudents(students);
+
+            // Show success message
+            showSuccess(`Student ${studentId} - ${firstName} ${lastName} has been added successfully!`);
+
+            // Reset form
+            this.reset();
+            document.getElementById('studentIdPart1').focus();
+
+            // Refresh table
+            displayStudents();
+        });
+
+        // Delete student
+        function deleteStudent(studentId) {
+            if (!confirm(`Are you sure you want to delete student ${studentId}?`)) {
+                return;
+            }
+
+            let students = loadStudents();
+            students = students.filter(s => s.studentId !== studentId);
+            saveStudents(students);
+
+            showSuccess(`Student ${studentId} has been deleted.`);
+            displayStudents();
+        }
+
+        // Edit student (basic implementation)
+        function editStudent(studentId) {
+            const students = loadStudents();
+            const student = students.find(s => s.studentId === studentId);
+
+            if (student) {
+                const [part1, part2] = student.studentId.split('-');
+                document.getElementById('studentIdPart1').value = part1;
+                document.getElementById('studentIdPart2').value = part2;
+                document.getElementById('firstName').value = student.firstName;
+                document.getElementById('lastName').value = student.lastName;
+                document.getElementById('email').value = student.email;
+                document.getElementById('password').value = student.password;
+                document.getElementById('confirmPassword').value = student.password;
+
+                // Scroll to form
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Delete the old entry (will be replaced when form is submitted)
+                deleteStudent(studentId);
+            }
+        }
+
+        // Load students on page load
+        displayStudents();
+    </script>
+</body>
+</html>

@@ -2,52 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Admin Dashboard - Cavendish Bus Management</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
     <div class="dashboard">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <img src="../assets/images/cavendish_mainlogo.jpg" alt="Cavendish Logo" class="sidebar-logo">
+                <img src="../assets/images/white_logo.png" alt="Cavendish Logo" class="sidebar-logo">
                 <div class="sidebar-title">Admin Panel</div>
             </div>
             
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active" data-page="dashboard">
-                    <span class="nav-icon">📊</span>
+                    <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span>
                     <span>Dashboard</span>
                 </a>
                 <a href="#" class="nav-item" data-page="drivers">
-                    <span class="nav-icon">👤</span>
+                    <span class="nav-icon"><i class="fas fa-user-tie"></i></span>
                     <span>Driver Management</span>
                 </a>
                 <a href="#" class="nav-item" data-page="buses">
-                    <span class="nav-icon">🚌</span>
+                    <span class="nav-icon"><i class="fas fa-bus"></i></span>
                     <span>Bus Fleet</span>
                 </a>
                 <a href="#" class="nav-item" data-page="complaints">
-                    <span class="nav-icon">📝</span>
+                    <span class="nav-icon"><i class="fas fa-exclamation-circle"></i></span>
                     <span>Complaints</span>
                 </a>
                 <a href="#" class="nav-item" data-page="routes">
-                    <span class="nav-icon">🗺️</span>
+                    <span class="nav-icon"><i class="fas fa-route"></i></span>
                     <span>Route Management</span>
                 </a>
                 <a href="#" class="nav-item" data-page="reports">
-                    <span class="nav-icon">📈</span>
+                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                     <span>Reports</span>
                 </a>
                 <a href="#" class="nav-item" data-page="students">
-                    <span class="nav-icon">🎓</span>
+                    <span class="nav-icon"><i class="fas fa-user-graduate"></i></span>
                     <span>Students</span>
                 </a>
                 <a href="../index.html" class="nav-item">
-                    <span class="nav-icon">🚪</span>
+                    <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
                     <span>Logout</span>
                 </a>
             </nav>
@@ -62,11 +73,11 @@
                 </div>
                 <div class="header-right">
                     <div class="header-icon" id="notificationIcon">
-                        <span>🔔</span>
+                        <i class="fas fa-bell"></i>
                         <span class="notification-badge">8</span>
                     </div>
                     <div class="header-icon" id="settingsIcon">
-                        <span>⚙️</span>
+                        <i class="fas fa-cog"></i>
                     </div>
                     <div class="profile-icon" id="profileIcon">
                         <span>AD</span>
@@ -80,7 +91,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon blue">
-                            <span>🚌</span>
+                            <i class="fas fa-bus"></i>
                         </div>
                         <div class="stat-info">
                             <h3>12</h3>
@@ -89,7 +100,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon green">
-                            <span>👤</span>
+                            <i class="fas fa-user-tie"></i>
                         </div>
                         <div class="stat-info">
                             <h3>18</h3>
@@ -98,7 +109,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon orange">
-                            <span>📝</span>
+                            <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div class="stat-info">
                             <h3>7</h3>
@@ -107,7 +118,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon red">
-                            <span>🎓</span>
+                            <i class="fas fa-user-graduate"></i>
                         </div>
                         <div class="stat-info">
                             <h3>1,245</h3>
@@ -205,60 +216,60 @@
                             </thead>
                             <tbody id="complaintsTableBody">
                                 <tr>
-                                    <td>#C001</td>
-                                    <td>Peter Lungu</td>
-                                    <td>Bus Delay</td>
-                                    <td>Bus #001</td>
-                                    <td>Nov 16, 2025</td>
-                                    <td><span class="status-badge pending">Pending</span></td>
-                                    <td>
+                                    <td data-label="ID">#C001</td>
+                                    <td data-label="Student Name">Peter Lungu</td>
+                                    <td data-label="Type">Bus Delay</td>
+                                    <td data-label="Bus">Bus #001</td>
+                                    <td data-label="Date">Nov 16, 2025</td>
+                                    <td data-label="Status"><span class="status-badge pending">Pending</span></td>
+                                    <td data-label="Actions">
                                         <button class="action-btn view" onclick="viewComplaint('C001')">View</button>
                                         <button class="action-btn resolve" onclick="resolveComplaint('C001')">Resolve</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>#C002</td>
-                                    <td>Grace Mwale</td>
-                                    <td>Cleanliness</td>
-                                    <td>Bus #003</td>
-                                    <td>Nov 15, 2025</td>
-                                    <td><span class="status-badge in-progress">In Progress</span></td>
-                                    <td>
+                                    <td data-label="ID">#C002</td>
+                                    <td data-label="Student Name">Grace Mwale</td>
+                                    <td data-label="Type">Cleanliness</td>
+                                    <td data-label="Bus">Bus #003</td>
+                                    <td data-label="Date">Nov 15, 2025</td>
+                                    <td data-label="Status"><span class="status-badge in-progress">In Progress</span></td>
+                                    <td data-label="Actions">
                                         <button class="action-btn view" onclick="viewComplaint('C002')">View</button>
                                         <button class="action-btn resolve" onclick="resolveComplaint('C002')">Resolve</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>#C003</td>
-                                    <td>James Tembo</td>
-                                    <td>Safety Concern</td>
-                                    <td>Bus #002</td>
-                                    <td>Nov 14, 2025</td>
-                                    <td><span class="status-badge pending">Pending</span></td>
-                                    <td>
+                                    <td data-label="ID">#C003</td>
+                                    <td data-label="Student Name">James Tembo</td>
+                                    <td data-label="Type">Safety Concern</td>
+                                    <td data-label="Bus">Bus #002</td>
+                                    <td data-label="Date">Nov 14, 2025</td>
+                                    <td data-label="Status"><span class="status-badge pending">Pending</span></td>
+                                    <td data-label="Actions">
                                         <button class="action-btn view" onclick="viewComplaint('C003')">View</button>
                                         <button class="action-btn resolve" onclick="resolveComplaint('C003')">Resolve</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>#C004</td>
-                                    <td>Linda Kasonde</td>
-                                    <td>Driver Behavior</td>
-                                    <td>Bus #001</td>
-                                    <td>Nov 13, 2025</td>
-                                    <td><span class="status-badge resolved">Resolved</span></td>
-                                    <td>
+                                    <td data-label="ID">#C004</td>
+                                    <td data-label="Student Name">Linda Kasonde</td>
+                                    <td data-label="Type">Driver Behavior</td>
+                                    <td data-label="Bus">Bus #001</td>
+                                    <td data-label="Date">Nov 13, 2025</td>
+                                    <td data-label="Status"><span class="status-badge resolved">Resolved</span></td>
+                                    <td data-label="Actions">
                                         <button class="action-btn view" onclick="viewComplaint('C004')">View</button>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>#C005</td>
-                                    <td>Michael Zimba</td>
-                                    <td>Bus Delay</td>
-                                    <td>Bus #004</td>
-                                    <td>Nov 12, 2025</td>
-                                    <td><span class="status-badge resolved">Resolved</span></td>
-                                    <td>
+                                    <td data-label="ID">#C005</td>
+                                    <td data-label="Student Name">Michael Zimba</td>
+                                    <td data-label="Type">Bus Delay</td>
+                                    <td data-label="Bus">Bus #004</td>
+                                    <td data-label="Date">Nov 12, 2025</td>
+                                    <td data-label="Status"><span class="status-badge resolved">Resolved</span></td>
+                                    <td data-label="Actions">
                                         <button class="action-btn view" onclick="viewComplaint('C005')">View</button>
                                     </td>
                                 </tr>
@@ -276,13 +287,39 @@
                     <div class="map-container">
                         <div id="adminMap"></div>
                         <div class="map-controls">
-                            <button class="map-btn" id="refreshAdminMapBtn">🔄 Refresh</button>
-                            <button class="map-btn" id="centerAdminMapBtn">📍 Center</button>
+                            <button class="map-btn" id="refreshAdminMapBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                            <button class="map-btn" id="centerAdminMapBtn"><i class="fas fa-location-arrow"></i> Center</button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav">
+            <div class="mobile-nav-items">
+                <a href="#" class="mobile-nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="drivers">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Drivers</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="buses">
+                    <i class="fas fa-bus"></i>
+                    <span>Buses</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="complaints">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Complaints</span>
+                </a>
+                <a href="#" class="mobile-nav-item" data-page="reports">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+        </nav>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -292,6 +329,30 @@
         if (typeof initAdminPage === 'function') {
             initAdminPage();
         }
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+        });
+
+        mobileOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Mobile bottom nav active state
+        const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+        mobileNavItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                mobileNavItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     </script>
 </body>
 </html>

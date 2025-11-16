@@ -6,9 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1e3361">
-    <meta name="description" content="Cavendish University Zambia Bus Management System - Student Login Portal">
-    <title>Cavendish Bus Management - Student Login</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <meta name="description" content="Cavendish University Zambia Bus Management System - Driver Login Portal">
+    <title>Cavendish Bus Management - Driver Login</title>
+    <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -16,15 +16,15 @@
     <div class="login-container">
         <div class="login-box">
             <div class="logo-section">
-                <img src="assets/images/white_logo.png" alt="Cavendish University Logo" class="university-logo">
+                <img src="../assets/images/white_logo.png" alt="Cavendish University Logo" class="university-logo">
                 <h1>Bus Management System</h1>
-                <p class="subtitle">Student Portal</p>
+                <p class="subtitle">Driver Portal</p>
             </div>
             
-            <form id="studentLoginForm" class="login-form">
+            <form id="driverLoginForm" class="login-form">
                 <div class="form-group">
-                    <label for="studentId"><i class="fas fa-id-card"></i> Student ID</label>
-                    <input type="text" id="studentId" name="studentId" placeholder="Enter your Student ID" required>
+                    <label for="driverId"><i class="fas fa-id-card"></i> Driver ID</label>
+                    <input type="text" id="driverId" name="driverId" placeholder="Enter your Driver ID" required>
                 </div>
                 
                 <div class="form-group">
@@ -37,17 +37,13 @@
                 <div class="forgot-password">
                     <a href="#" id="forgotPasswordLink">Forgot Password?</a>
                 </div>
-
-                <div class="forgot-password">
-                    <a href="student_page/student_register.html" ></i> Create an Account</a>
-                </div>
             </form>
             
             <div class="other-portals">
-                <p>Staff Login:</p>
+                <p>Other Portals:</p>
                 <div class="portal-links">
-                    <a href="admin_dashboard/admin_login.html" class="portal-link"><i class="fas fa-user-shield"></i> Admin Portal</a>
-                    <a href="driver_page/driver_login.html" class="portal-link"><i class="fas fa-id-badge"></i> Driver Portal</a>
+                    <a href="../index.html" class="portal-link"><i class="fas fa-graduation-cap"></i> Student Portal</a>
+                    <a href="../admin_dashboard/admin_login.html" class="portal-link"><i class="fas fa-user-shield"></i> Admin Portal</a>
                 </div>
             </div>
         </div>
@@ -57,6 +53,6 @@
         </footer>
     </div>
     
-    <script src="scripts/main.js"></script>
+    <script src="../scripts/main.js"></script>
 </body>
 </html>

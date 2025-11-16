@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#1e3361">
+    <meta name="description" content="Cavendish University Zambia Bus Management System - Approve Registrations">
+    <title>Cavendish Bus Management - Approve Students</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3361 0%, #2a4a7f 100%);
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header h1 {
+            color: white;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .approval-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .approval-card h2 {
+            color: #1e3361;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .approval-card .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #1e3361 0%, #2a4a7f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            font-size: 2rem;
+            margin: 0 0 5px 0;
+        }
+
+        .stat-box p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .filter-tab.active {
+            color: #1e3361;
+            border-bottom-color: #1e3361;
+        }
+
+        .filter-tab:hover {
+            color: #1e3361;
+        }
+
+        .registrations-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .registration-item {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .registration-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .registration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .student-info h3 {
+            color: #1e3361;
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+        }
+
+        .student-id-badge {
+            background: #1e3361;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .registration-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+        }
+
+        .detail-item i {
+            color: #1e3361;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-message,
+        .error-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .header-btn {
+                justify-content: center;
+            }
+
+            .registration-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1><i class="fas fa-user-check"></i> Student Approvals</h1>
+            <div class="header-actions">
+                <a href="manage_students.html" class="header-btn">
+                    <i class="fas fa-users-cog"></i> Manage Students
+                </a>
+                <a href="home.html" class="header-btn">
+                    <i class="fas fa-arrow-left"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="approval-card">
+            <h2><i class="fas fa-clipboard-check"></i> Registration Requests</h2>
+            <p class="subtitle">Review and approve or reject student registration requests</p>
+
+            <div id="successMessage" class="success-message">
+                <i class="fas fa-check-circle"></i> <span id="successText"></span>
+            </div>
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3 id="pendingCount">0</h3>
+                    <p>Pending Requests</p>
+                </div>
+                <div class="stat-box" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    <h3 id="approvedCount">0</h3>
+                    <p>Approved Today</p>
+                </div>
+                <div class="stat-box" style="background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);">
+                    <h3 id="rejectedCount">0</h3>
+                    <p>Rejected Today</p>
+                </div>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterRegistrations('pending')">
+                    <i class="fas fa-clock"></i> Pending
+                </button>
+                <button class="filter-tab" onclick="filterRegistrations('approved')">
+                    <i class="fas fa-check"></i> Approved
+                </button>
+                <button class="filter-tab" onclick="filterRegistrations('rejected')">
+                    <i class="fas fa-times"></i> Rejected
+                </button>
+            </div>
+
+            <div id="registrationsContainer" class="registrations-grid">
+                <!-- Registrations will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PENDING_STORAGE_KEY = 'cavendish_pending_registrations';
+        const APPROVED_STORAGE_KEY = 'cavendish_students';
+        const REJECTED_STORAGE_KEY = 'cavendish_rejected_registrations';
+
+        let currentFilter = 'pending';
+
+        // Load registrations from storage
+        function loadRegistrations(status) {
+            let registrations = [];
+            
+            if (status === 'pending') {
+                const data = localStorage.getItem(PENDING_STORAGE_KEY);
+                registrations = data ? JSON.parse(data) : [];
+            } else if (status === 'approved') {
+                const data = localStorage.getItem(APPROVED_STORAGE_KEY);
+                registrations = data ? JSON.parse(data) : [];
+            } else if (status === 'rejected') {
+                const data = localStorage.getItem(REJECTED_STORAGE_KEY);
+                registrations = data ? JSON.parse(data) : [];
+            }
+            
+            return registrations;
+        }
+
+        // Update statistics
+        function updateStats() {
+            const pending = loadRegistrations('pending');
+            const approved = loadRegistrations('approved');
+            const rejected = loadRegistrations('rejected');
+
+            // Filter approved/rejected for today
+            const today = new Date().toDateString();
+            const approvedToday = approved.filter(r => 
+                r.approvedAt && new Date(r.approvedAt).toDateString() === today
+            ).length;
+            const rejectedToday = rejected.filter(r => 
+                r.rejectedAt && new Date(r.rejectedAt).toDateString() === today
+            ).length;
+
+            document.getElementById('pendingCount').textContent = pending.length;
+            document.getElementById('approvedCount').textContent = approvedToday;
+            document.getElementById('rejectedCount').textContent = rejectedToday;
+        }
+
+        // Display registrations
+        function displayRegistrations(status) {
+            const container = document.getElementById('registrationsContainer');
+            const registrations = loadRegistrations(status);
+
+            if (registrations.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No ${status} registrations</h3>
+                        <p>There are currently no student registrations with ${status} status.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = registrations.map(reg => `
+                <div class="registration-item">
+                    <div class="registration-header">
+                        <div class="student-info">
+                            <h3>${reg.firstName} ${reg.lastName}</h3>
+                            <span class="student-id-badge">${reg.studentId}</span>
+                        </div>
+                        <span class="status-badge status-${status}">
+                            <i class="fas fa-${status === 'pending' ? 'clock' : status === 'approved' ? 'check' : 'times'}"></i>
+                            ${status.charAt(0).toUpperCase() + status.slice(1)}
+                        </span>
+                    </div>
+                    
+                    <div class="registration-details">
+                        <div class="detail-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>${reg.email}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-phone"></i>
+                            <span>${reg.phone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>${new Date(reg.submittedAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>${new Date(reg.submittedAt).toLocaleTimeString()}</span>
+                        </div>
+                    </div>
+                    
+                    ${status === 'pending' ? `
+                        <div class="action-buttons">
+                            <button class="btn btn-approve" onclick="approveRegistration('${reg.studentId}')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-reject" onclick="rejectRegistration('${reg.studentId}')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Filter registrations
+        function filterRegistrations(status) {
+            currentFilter = status;
+            
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.filter-tab').classList.add('active');
+            
+            displayRegistrations(status);
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const msgElement = document.getElementById(type + 'Message');
+            const textElement = document.getElementById(type + 'Text');
+            textElement.textContent = message;
+            msgElement.style.display = 'block';
+            
+            setTimeout(() => {
+                msgElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Approve registration
+        function approveRegistration(studentId) {
+            if (!confirm(`Are you sure you want to approve student ${studentId}?`)) {
+                return;
+            }
+
+            // Get pending registrations
+            let pending = loadRegistrations('pending');
+            const registration = pending.find(r => r.studentId === studentId);
+            
+            if (!registration) {
+                showMessage('Registration not found!', 'error');
+                return;
+            }
+
+            // Remove from pending
+            pending = pending.filter(r => r.studentId !== studentId);
+            localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(pending));
+
+            // Add to approved (students list)
+            registration.status = 'approved';
+            registration.approvedAt = new Date().toISOString();
+            
+            const approved = loadRegistrations('approved');
+            approved.push(registration);
+            localStorage.setItem(APPROVED_STORAGE_KEY, JSON.stringify(approved));
+
+            showMessage(`Student ${studentId} - ${registration.firstName} ${registration.lastName} has been approved!`, 'success');
+            
+            updateStats();
+            displayRegistrations(currentFilter);
+        }
+
+        // Reject registration
+        function rejectRegistration(studentId) {
+            const reason = prompt(`Why are you rejecting student ${studentId}?\n(This reason will be stored for records)`);
+            
+            if (reason === null) {
+                return; // User cancelled
+            }
+
+            // Get pending registrations
+            let pending = loadRegistrations('pending');
+            const registration = pending.find(r => r.studentId === studentId);
+            
+            if (!registration) {
+                showMessage('Registration not found!', 'error');
+                return;
+            }
+
+            // Remove from pending
+            pending = pending.filter(r => r.studentId !== studentId);
+            localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(pending));
+
+            // Add to rejected
+            registration.status = 'rejected';
+            registration.rejectedAt = new Date().toISOString();
+            registration.rejectionReason = reason || 'No reason provided';
+            
+            const rejected = loadRegistrations('rejected');
+            rejected.push(registration);
+            localStorage.setItem(REJECTED_STORAGE_KEY, JSON.stringify(rejected));
+
+            showMessage(`Student ${studentId} registration has been rejected.`, 'success');
+            
+            updateStats();
+            displayRegistrations(currentFilter);
+        }
+
+        // NEW: Supabase Integration
+        
+        // Check if admin is logged in
+        async function checkAdminAuth() {
+            const adminData = sessionStorage.getItem('cavendish_admin');
+            if (!adminData) {
+                window.location.href = 'admin_login.html';
+                return null;
+            }
+            return JSON.parse(adminData);
+        }
+
+        // Load registrations from Supabase
+        async function loadRegistrationsFromSupabase() {
+            try {
+                const result = await getPendingStudents();
+                if (result.success) {
+                    return result.data;
+                } else {
+                    console.error('Error loading students:', result.error);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+                return [];
+            }
+        }
+
+        // Update stats from Supabase
+        async function updateStatsFromSupabase() {
+            try {
+                const stats = await getDashboardStats();
+                if (stats.success) {
+                    document.getElementById('pendingCount').textContent = stats.data.pendingStudents;
+                    document.getElementById('approvedCount').textContent = stats.data.approvedStudents;
+                    document.getElementById('totalCount').textContent = 
+                        stats.data.pendingStudents + stats.data.approvedStudents;
+                }
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        // Display registrations from Supabase
+        async function displayRegistrationsFromSupabase(filter = 'pending') {
+            const container = document.getElementById('registrationsList');
+            container.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1e3361;"></i><p>Loading...</p></div>';
+
+            try {
+                const result = await getAllStudents(filter);
+                
+                if (!result.success || result.data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No ${filter} registrations</h3>
+                            <p>There are no ${filter} student registrations at this time.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const admin = await checkAdminAuth();
+                
+                container.innerHTML = result.data.map(student => `
+                    <div class="registration-item">
+                        <div class="registration-header">
+                            <div class="student-info">
+                                <h3>${student.full_name}</h3>
+                                <span class="student-id">${student.student_id}</span>
+                            </div>
+                            <span class="status-badge status-${student.status}">${student.status}</span>
+                        </div>
+                        
+                        <div class="registration-details">
+                            <div class="detail-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>${student.email}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${student.phone}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Registered: ${new Date(student.registration_date).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        
+                        ${student.status === 'pending' ? `
+                        <div class="action-buttons">
+                            <button class="btn btn-approve" onclick="approveRegistrationSupabase('${student.id}', '${student.student_id}')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-reject" onclick="rejectRegistrationSupabase('${student.id}', '${student.student_id}')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                        ` : student.status === 'approved' ? `
+                        <div style="padding-top: 15px; border-top: 1px solid #e0e0e0; margin-top: 15px; color: #28a745;">
+                            <i class="fas fa-check-circle"></i> Approved on ${new Date(student.approved_date).toLocaleDateString()}
+                        </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error displaying registrations:', error);
+                container.innerHTML = `
+                    <div class="error-message" style="display: block;">
+                        <i class="fas fa-exclamation-triangle"></i> Error loading registrations: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Approve registration (Supabase)
+        async function approveRegistrationSupabase(studentUuid, studentId) {
+            if (!confirm(`Are you sure you want to approve student ${studentId}?`)) {
+                return;
+            }
+
+            try {
+                const admin = await checkAdminAuth();
+                const result = await updateStudentStatus(studentUuid, 'approve', admin.id);
+                
+                if (result.success) {
+                    showMessage(`Student ${studentId} has been approved!`, 'success');
+                    await updateStatsFromSupabase();
+                    await displayRegistrationsFromSupabase(currentFilter);
+                } else {
+                    showMessage('Error approving student: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An unexpected error occurred', 'error');
+            }
+        }
+
+        // Reject registration (Supabase)
+        async function rejectRegistrationSupabase(studentUuid, studentId) {
+            const reason = prompt(`Why are you rejecting student ${studentId}?\n(This reason will be stored for records)`);
+            
+            if (reason === null) {
+                return;
+            }
+
+            try {
+                const admin = await checkAdminAuth();
+                const result = await updateStudentStatus(studentUuid, 'reject', admin.id);
+                
+                if (result.success) {
+                    showMessage(`Student ${studentId} registration has been rejected.`, 'success');
+                    await updateStatsFromSupabase();
+                    await displayRegistrationsFromSupabase(currentFilter);
+                } else {
+                    showMessage('Error rejecting student: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('An unexpected error occurred', 'error');
+            }
+        }
+
+        // Initialize page with Supabase
+        async function initializePage() {
+            const admin = await checkAdminAuth();
+            if (!admin) return;
+
+            // Check if Supabase is configured
+            if (!isSupabaseConfigured()) {
+                document.getElementById('registrationsList').innerHTML = `
+                    <div class="error-message" style="display: block;">
+                        <h3>⚠️ Supabase Not Configured</h3>
+                        <p>Please update your Supabase credentials in <code>scripts/supabase-config.js</code></p>
+                        <p>See <code>SUPABASE_SETUP_GUIDE.md</code> for instructions.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            await updateStatsFromSupabase();
+            await displayRegistrationsFromSupabase('pending');
+        }
+
+        // Update filter handlers
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                await displayRegistrationsFromSupabase(currentFilter);
+            });
+        });
+
+        // Initialize on page load
+        initializePage();
+    </script>
+    <script src="../scripts/supabase-config.js"></script>
+</body>
+</html>
